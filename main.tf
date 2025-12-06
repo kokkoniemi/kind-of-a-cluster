@@ -62,7 +62,4 @@ resource "kind_cluster" "dev" {
 module "argocd" {
   source = "./argocd"
   depends_on = [kind_cluster.dev]
-
-  kubeconfig = kind_cluster.dev.kubeconfig
-  kubecontext = var.cluster_name
 }

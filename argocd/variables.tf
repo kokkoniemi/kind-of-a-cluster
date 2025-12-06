@@ -10,13 +10,3 @@ variable "argocd_helm_version" {
   default     = "9.1.6"
 }
 
-variable "kubeconfig" {
-  description = "Kubernetes cluster configuration path"
-  type        = string
-}
-
-variable "kubecontext" {
-  description = "Kubernetes context"
-  type        = string
-}
-
