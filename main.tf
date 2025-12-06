@@ -8,12 +8,33 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = "1.19.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "3.0.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "3.1.1"
+    }
   }
 }
 
 provider "kind" {}
+
 provider "kubectl" {
   config_path = kind_cluster.dev.kubeconfig_path
+}
+
+
+provider "helm" {
+  kubernetes = {
+    config_path = kind_cluster.dev.kubeconfig_path
+  }
+}
+
+provider "kubernetes" {
+  config_path    = kind_cluster.dev.kubeconfig_path
+  #config_context = var.cluster_name
 }
 
 resource "kind_cluster" "dev" {
@@ -21,9 +42,9 @@ resource "kind_cluster" "dev" {
   wait_for_ready = true
 
   kind_config {
-    kind = "Cluster"
+    kind        = "Cluster"
     api_version = "kind.x-k8s.io/v1alpha4"
-    
+
     node {
       role = "control-plane"
     }
@@ -35,6 +56,13 @@ resource "kind_cluster" "dev" {
     node {
       role = "worker"
     }
-   }
+  }
 }
 
+module "argocd" {
+  source = "./argocd"
+  depends_on = [kind_cluster.dev]
+
+  kubeconfig = kind_cluster.dev.kubeconfig
+  kubecontext = var.cluster_name
+}

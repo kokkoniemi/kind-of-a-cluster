@@ -2,3 +2,4 @@
 terraform.tfstate
 terraform.tfstate.backup
 kind-of-a-cluster-config
+argocd/argocd-login.txt
